@@ -13,6 +13,7 @@ library(vtable)
 library(DescTools)
 library(gmodels)
 library(janitor)
+library(tidyr)
 
 # Importando os dados simulados -------------------------------------------
 
@@ -46,7 +47,7 @@ dados_categoricos %>%
   adorn_totals("row") %>% 
   adorn_rounding(digits = 1)
 
-## Equivalente a Tabela 6 de Araujo e Gomes (2021): Tempo de Experiencia e 
+## Equivalente à Tab. 6 de Araujo e Gomes (2021): Tempo de Experiencia e 
 ## Participacao em curso de gestao de riscos
 
 CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8, 
@@ -54,20 +55,24 @@ CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8,
            prop.r = FALSE, format = "SPSS")
 
 
-## Equivalente a Tabela 7 de Araujo e Gomes (2021)
+## Equivalente à Tab. 7 de Araujo & Gomes (2021)
 
-df %>% 
-  pivot_longer(cols = -c(Sex, `Age Group`),
-               names_to = "Question",
-               values_to = "Value") %>%
-  group_by(Question, Sex, `Age Group`) %>%
-  summarise(`Strongly Agree` = sum(Value == 7)/n(),
-            `Slightly Agree` = sum(Value == 6)/n(),
-            Agree = sum(Value == 5)/n(),
-            Neutral = sum(Value == 4)/n(),
-            Disagree = sum(Value == 3)/n(),
-            `Slightly Disagree` = sum(Value == 2)/n(),
-            `Strongly Disagree` = sum(Value == 1)/n()) 
+dados_catgrupo4 <-
+  dados_categoricos %>% select(id, q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7,
+                               q4_8, q4_9, q4_10, q4_11, q4_12)
+
+catlongo <- dados_catgrupo4 %>%
+  pivot_longer(!id, names_to = "liker", values_to = "count")
+
+t2 <- catlongo %>%
+  tabyl(liker, count)
+t2
+
+t2 %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(digits = 2) %>%
+  adorn_ns()
+
 
 
 # Numericos ---------------------------------------------------------------
@@ -86,7 +91,7 @@ dados_grupo4 <-
                              q4_11,
                              q4_12)
 
-## Equivalente a Tabela 8 de Araujo e Gomes (2021)
+## Equivalente à Tab. 8 de Araujo & Gomes (2021)
 
 questoes <- c(
   'Ignorar riscos relevantes',

@@ -1,0 +1,169 @@
+---
+title: "Gestão de Riscos: Análise dos Dados"
+author: "Prof. Washington S. da Silva"
+format:
+  html:
+    self-contained: true
+    toc: true
+---
+
+
+## Pacotes necessários
+
+```{r}
+#| echo: true
+#| warning: false
+
+library(readr)
+library(dplyr)
+library(vtable)
+library(DescTools)
+library(gmodels)
+library(janitor)
+library(tidyr)
+```
+
+
+## Importando o arquivo de dados categóricos
+
+```{r}
+#| echo: true
+#| warning: false
+
+path2 <- "dados/dados_categoricos.rds"
+dados_categoricos <- read_rds(path2)
+glimpse(dados_categoricos)
+```
+
+
+## Tab. 3 de Araujo & Gomes (2021): Sexo e Faixa Etaria
+
+```{r}
+#| echo: true
+
+CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
+           digits = 1, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+```
+
+
+## Tab. 4 de Araujo & Gomes (2021): Formação e Função
+
+```{r}
+#| echo: true
+
+CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3, 
+           digits = 1, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+```
+
+
+## Tab. 5 de Araujo & Gomes (2021): Tempo de Experiência na Instituicao
+
+```{r}
+#| echo: true
+
+dados_categoricos %>%
+  tabyl(q1_6)  %>%
+  adorn_totals("row") %>% 
+  adorn_rounding(digits = 1)
+```
+
+
+## Tab. 6 de Araujo & Gomes (2021): Tempo de Experiencia e Participacao em 
+## curso de gestao de riscos
+
+```{r}
+#| echo: true
+
+CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+```
+
+
+## Tab. 7 de Araujo & Gomes (2021)
+
+```{r}
+#| echo: true
+
+# extraindo id e as questões do grupo 4
+ 
+dados_cat_grupo4 <-
+  dados_categoricos %>% select(id, q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7,
+                               q4_8, q4_9, q4_10, q4_11, q4_12)
+
+# alterando para o formato long
+  
+catlongo <- dados_cat_grupo4 %>%
+  pivot_longer(!id, names_to = "liker", values_to = "count")
+
+# criando a tabela 
+ 
+tab7 <- catlongo %>%
+  tabyl(liker, count) %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(digits = 2) %>%
+  adorn_ns()
+
+tab7
+```
+
+
+## Tab. 8 de Araujo & Gomes (2021)
+
+Importando os dados numéricos:
+
+```{r}
+#| echo: true
+
+path1 <- "dados/dados_numericos.rds"
+dados_numericos <- read_rds(path1)
+glimpse(dados_numericos)
+```
+
+Extraindo as questões do grupo 4:
+
+```{r}
+#| echo: true
+
+dados_num_grupo4 <-
+  dados_numericos %>% select(q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7, q4_8,   
+                             q4_9, q4_10, q4_11, q4_12)
+```
+
+Criando a tabela:
+
+```{r}
+#| echo: true
+
+# Textos das questões
+
+texto_questoes <- c(
+  'Ignorar riscos relevantes',
+  'Informacoes complexas',
+  'Falta de confianca/entendimento',
+  'Divergencias sobre o risco',
+  'Estrutura institucional inadequada',
+  'sistema de informacao ineficiente',
+  'Renovacao do ciclo de GR',
+  'Mapeamento dos processos',
+  'Falta de engajamento',
+  'Falta de capacitacao',
+  'Excesso de demandas',
+  'Recursos insuficientes'
+)
+
+# criando a tabela
+
+st(dados_num_grupo4, col.align = 'center', labels = texto_questoes,
+   summ = list(
+     c('round(mean(x), 2)', 'pctile(x)[25]', 'round(median(x), 2)', 
+       'pctile(x)[75]', 'Mode(x)','round(sd(x), 2)', 'round(mad(x), 2)')
+   ),
+   summ.names = list(
+     c('Media', 'q1','Mediana', 'q3', 'Moda', 'Desvio-Padrao', 'DAM')
+   ))
+```
+
+
