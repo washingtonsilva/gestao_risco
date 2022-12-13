@@ -53,7 +53,7 @@ dados <- fabricate(
   q1_3 = draw_binary(N = 38, prob = 0.5),   
     
   # Categorica Nominal - Cargo que ocupa no momento
-  c = draw_categorical(prob = c(0.2, 0.2, 0.2, 0.2, 0.2),
+  q1_4 = draw_categorical(prob = c(0.2, 0.2, 0.2, 0.2, 0.2),
                           N = 38,
                           category_labels = c("CD-2", 
                                               "CD-3",

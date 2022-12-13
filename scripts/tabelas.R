@@ -9,37 +9,110 @@
 
 library(readr)
 library(dplyr)
-library(gtsummary)
+library(vtable)
+library(DescTools)
+library(gmodels)
+library(janitor)
 
 # Importando os dados simulados -------------------------------------------
 
-path1 <- "C:/Users/Usuario/Desktop/github/gestao_risco/dados_simulados/dados_categoricos.rds"
-dados_categoricos <- read_rds(path1)
-glimpse(dados_categoricos)
-
-path2 <- "C:/Users/Usuario/Desktop/github/gestao_risco/dados_simulados/dados_numericos.rds"
-dados_numericos <- read_rds(path2)
+path1 <- "dados_simulados/dados_numericos.rds"
+dados_numericos <- read_rds(path1)
 glimpse(dados_numericos)
 
+path2 <- "dados_simulados/dados_categoricos.rds"
+dados_categoricos <- read_rds(path2)
+glimpse(dados_categoricos)
 
-# Tabelas -----------------------------------------------------------------
+
+# Categoricos -------------------------------------------------------------
+
+## Equivalente a Tabela 3 de Araujo e Gomes (2021): Sexo e Faixa Etaria
+
+CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
+           digits = 1, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+
+## Equivalente a Tabela 4 de Araujo e Gomes (2021): Formacao e Funcao
+
+CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3, 
+           digits = 1, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+
+## Equivalente a Tabela 5 de Araujo e Gomes (2021): Tempo na instituicao
+
+dados_categoricos %>%
+  tabyl(q1_6)  %>%
+  adorn_totals("row") %>% 
+  adorn_rounding(digits = 1)
+
+## Equivalente a Tabela 6 de Araujo e Gomes (2021): Tempo de Experiencia e 
+## Participacao em curso de gestao de riscos
+
+CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+
+
+## Equivalente a Tabela 7 de Araujo e Gomes (2021)
+
+df %>% 
+  pivot_longer(cols = -c(Sex, `Age Group`),
+               names_to = "Question",
+               values_to = "Value") %>%
+  group_by(Question, Sex, `Age Group`) %>%
+  summarise(`Strongly Agree` = sum(Value == 7)/n(),
+            `Slightly Agree` = sum(Value == 6)/n(),
+            Agree = sum(Value == 5)/n(),
+            Neutral = sum(Value == 4)/n(),
+            Disagree = sum(Value == 3)/n(),
+            `Slightly Disagree` = sum(Value == 2)/n(),
+            `Strongly Disagree` = sum(Value == 1)/n()) 
+
+
+# Numericos ---------------------------------------------------------------
 
 dados_grupo4 <-
-  dados_categoricos %>% select(q4_1,
-                               q4_2,
-                               q4_3,
-                               q4_4,
-                               q4_5,
-                               q4_6,
-                               q4_7,
-                               q4_8,
-                               q4_9,
-                               q4_10,
-                               q4_11,
-                               q4_12)
+  dados_numericos %>% select(q4_1,
+                             q4_2,
+                             q4_3,
+                             q4_4,
+                             q4_5,
+                             q4_6,
+                             q4_7,
+                             q4_8,
+                             q4_9,
+                             q4_10,
+                             q4_11,
+                             q4_12)
 
-apply(dados_grupo4, 2, table)
+## Equivalente a Tabela 8 de Araujo e Gomes (2021)
+
+questoes <- c(
+  'Ignorar riscos relevantes',
+  'Informacoes complexas',
+  'Falta de confianca/entendimento',
+  'Divergencias sobre o risco',
+  'Estrutura institucional inadequada',
+  'sistema de informacao ineficiente',
+  'Renovacao do ciclo de GR',
+  'Mapeamento dos processos',
+  'Falta de engajamento',
+  'Falta de capacitacao',
+  'Excesso de demandas',
+  'Recursos insuficientes'
+)
+
+## Equivalente a Tabela 8 de Araujo e Gomes (2021)
+
+st(dados_grupo4, col.align = 'center', labels = questoes,
+   summ = list(
+     c('round(mean(x), 2)', 'pctile(x)[25]', 'round(median(x), 2)', 
+       'pctile(x)[75]', 'Mode(x)','round(sd(x), 2)', 'round(mad(x), 2)')
+   ),
+   summ.names = list(
+     c('Media', 'q1','Mediana', 'q3', 'Moda', 'Desvio-Padrao', 'DAM')
+   ))
 
 
-dados_grupo4 %>% group_by(levels(dados_grupo4$q4_1)) %>% tally(sort = TRUE)
-  
+
