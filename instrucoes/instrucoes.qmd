@@ -18,9 +18,11 @@ library(readr)
 library(dplyr)
 library(vtable)
 library(DescTools)
-library(gmodels)
+library(descr)
+library(pander)
 library(janitor)
 library(tidyr)
+library(knitr)
 ```
 
 
@@ -30,8 +32,8 @@ library(tidyr)
 #| echo: true
 #| warning: false
 
-path2 <- "dados/dados_categoricos.rds"
-dados_categoricos <- read_rds(path2)
+path1 <- "dados/dados_categoricos.rds"
+dados_categoricos <- read_rds(path1)
 glimpse(dados_categoricos)
 ```
 
@@ -41,9 +43,9 @@ glimpse(dados_categoricos)
 ```{r}
 #| echo: true
 
-CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
-           digits = 1, prop.chisq = FALSE, prop.c = FALSE, 
-           prop.r = FALSE, format = "SPSS")
+descr::CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
+                  digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+                  prop.r = FALSE, format = "SPSS")
 ```
 
 
@@ -53,7 +55,7 @@ CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2,
 #| echo: true
 
 CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3, 
-           digits = 1, prop.chisq = FALSE, prop.c = FALSE, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
            prop.r = FALSE, format = "SPSS")
 ```
 
@@ -65,13 +67,12 @@ CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3,
 
 dados_categoricos %>%
   tabyl(q1_6)  %>%
-  adorn_totals("row") %>% 
-  adorn_rounding(digits = 1)
+  adorn_totals("row") %>%
+  adorn_pct_formatting(digits = 0)
 ```
 
 
-## Tab. 6 de Araujo & Gomes (2021): Tempo de Experiencia e Participacao em 
-## curso de gestao de riscos
+## Tab. 6 de Araujo & Gomes (2021): Tempo de Experiencia e Participacao em curso de gestao de riscos
 
 ```{r}
 #| echo: true
@@ -91,7 +92,20 @@ CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8,
  
 dados_cat_grupo4 <-
   dados_categoricos %>% select(id, q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7,
-                               q4_8, q4_9, q4_10, q4_11, q4_12)
+                               q4_8, q4_9, q4_10, q4_11, q4_12) %>%
+              rename(`Ignorar riscos relevantes` = q4_1, 
+                      `Informações complexas` = q4_2,
+                      `Falta de confiança/entendimento` = q4_3,
+                      `Divergências sobre o risco` = q4_4,
+                      `Estrutura institucional inadequada` = q4_5,
+                      `sistema de informação ineficiente` = q4_6,
+                      `Renovação do ciclo de GR` = q4_7,
+                      `Mapeamento dos processos` = q4_8,
+                      `Falta de engajamento` = q4_9,
+                      `Falta de capacitação` = q4_10,
+                      `Excesso de demandas` = q4_11,
+                      `Recursos insuficientes` = q4_12
+                             )
 
 # alterando para o formato long
   
@@ -103,7 +117,7 @@ catlongo <- dados_cat_grupo4 %>%
 tab7 <- catlongo %>%
   tabyl(liker, count) %>%
   adorn_percentages("row") %>%
-  adorn_pct_formatting(digits = 2) %>%
+  adorn_pct_formatting(digits = 1) %>%
   adorn_ns()
 
 tab7
@@ -117,8 +131,8 @@ Importando os dados numéricos:
 ```{r}
 #| echo: true
 
-path1 <- "dados/dados_numericos.rds"
-dados_numericos <- read_rds(path1)
+path2 <- "dados/dados_numericos.rds"
+dados_numericos <- read_rds(path2)
 glimpse(dados_numericos)
 ```
 
@@ -129,7 +143,7 @@ Extraindo as questões do grupo 4:
 
 dados_num_grupo4 <-
   dados_numericos %>% select(q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7, q4_8,   
-                             q4_9, q4_10, q4_11, q4_12)
+                             q4_9, q4_10, q4_11, q4_12) 
 ```
 
 Criando a tabela:
@@ -141,15 +155,15 @@ Criando a tabela:
 
 texto_questoes <- c(
   'Ignorar riscos relevantes',
-  'Informacoes complexas',
-  'Falta de confianca/entendimento',
-  'Divergencias sobre o risco',
+  'Informações complexas',
+  'Falta de confiança/entendimento',
+  'Divergências sobre o risco',
   'Estrutura institucional inadequada',
-  'sistema de informacao ineficiente',
-  'Renovacao do ciclo de GR',
+  'sistema de informação ineficiente',
+  'Renovação do ciclo de GR',
   'Mapeamento dos processos',
   'Falta de engajamento',
-  'Falta de capacitacao',
+  'Falta de capacitação',
   'Excesso de demandas',
   'Recursos insuficientes'
 )
