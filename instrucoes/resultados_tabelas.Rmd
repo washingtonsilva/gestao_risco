@@ -1,37 +1,19 @@
 ---
-title: "Tabelas dos Resultados do Survey"
-subtitle: "Instruções para o mestrando Juliano M. Terra"
-author: "Prof. Washington S. da Silva"
-date: today
-format:
-  html:
-    self-contained: true
-    toc: true
+title: "Instruçoes para Analisar os Dados do Survey"
+author: "Prof. Washington S. Silva"
+output: html_notebook
 ---
 
+## Pacotes Necessários
 
-## Pacotes necessários
-
-Importante lembrar que antes de ativar os pacotes, conforme os comandos a 
-seguir, é necessário instalá-los, o que pode ser feito copiando os nomes e inseri-los no menu `Packages -> Install` do RStudio, sendo que os nomes dos pacotes devem ser separados por um espaço ou por vírgula.
-
-Os nomes podem ser copiados do trecho a seguir:
-```
-readr, readxl, dplyr, vtable, DescTools, descr, janitor, tidyr, knitr
-```
-
-Ativando os pacotes:
-
-```{r}
-#| echo: true
-#| warning: false
-
+```{r setup, warning = FALSE, message = FALSE}
 library(readr)
 library(readxl)
 library(dplyr)
 library(vtable)
 library(DescTools)
 library(descr)
+library(pander)
 library(janitor)
 library(tidyr)
 library(knitr)
@@ -40,22 +22,13 @@ library(knitr)
 
 ## Importanto o arquivo (csv) produzido pelo Google Forms
 
-Supondo que o arquivo dos dados do survey gerado pelo Google Forms 
-esteja no mesmo formato do arquivo `dados_brutos.xlsx`, 
-**que é o formato adequado**, esse arquivo pode ser importando com os seguintes comandos:
-
 ```{r}
-#| echo: true
-
 dados_brutos <- read_xlsx('dados/dados_brutos.xlsx')
 glimpse(dados_brutos)
 ```
 
 
 ## Transformando o tipo/classe dos dados brutos
-
-Após importar o arquvio dos dados brutos, **o qual deve estar no formado adequado **, é necessário converter o tipo/classe dos dados para o formato apropriado 
-para a análise. Os comandos a seguir fazem esta conversão:
 
 ```{r}
 #| echo: true
@@ -401,9 +374,6 @@ dados_categoricos <- dados_brutos %>%
 ## Verificando a estrutura dos dados categóricos
 
 ```{r}
-#| echo: true
-#| warning: false
-
 glimpse(dados_categoricos)
 ```
 
@@ -411,19 +381,15 @@ glimpse(dados_categoricos)
 ## Tab. 3 de Araujo & Gomes (2021): Sexo e Faixa Etaria
 
 ```{r}
-#| echo: true
-
-descr::CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
-                  digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
-                  prop.r = FALSE, format = "SPSS")
+CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
 ```
 
 
 ## Tab. 4 de Araujo & Gomes (2021): Formação e Função
 
 ```{r}
-#| echo: true
-
 CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3, 
            digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
            prop.r = FALSE, format = "SPSS")
@@ -433,8 +399,6 @@ CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3,
 ## Tab. 5 de Araujo & Gomes (2021): Tempo de Experiência na Instituicao
 
 ```{r}
-#| echo: true
-
 dados_categoricos %>%
   tabyl(q1_6)  %>%
   adorn_totals("row") %>%
@@ -445,8 +409,6 @@ dados_categoricos %>%
 ## Tab. 6 de Araujo & Gomes (2021): Tempo de Experiencia e Participacao em curso de gestao de riscos
 
 ```{r}
-#| echo: true
-
 CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8, 
            digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
            prop.r = FALSE, format = "SPSS")
@@ -456,8 +418,6 @@ CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8,
 ## Tab. 7 de Araujo & Gomes (2021)
 
 ```{r}
-#| echo: true
-
 # extraindo id e as questões do grupo 4
  
 dados_cat_grupo4 <-
@@ -496,16 +456,8 @@ tab7
 
 ## Tab. 8 de Araujo & Gomes (2021)
 
-Para produzir uma tabela similar à Tabela 8 de Araujo & Gomes (2021) é 
-necessário transformar, certamente, as variáveis do grupo 4 para o tipo/classe numérico. 
-
-Os comandos a seguir transformam todas as variáveis que podem ser 
-transformadas para o tipo/classe numérico, para este tipo, incluindo, 
-certamente, as variáveis do grupo 4:
 
 ```{r}
-#| echo: true
-
 dados_numericos <- dados_categoricos %>%
   transmute(
     id = id,
@@ -797,8 +749,6 @@ dados_numericos <- dados_categoricos %>%
 Extraindo as questões do grupo 4:
 
 ```{r}
-#| echo: true
-
 dados_num_grupo4 <-
   dados_numericos %>% select(q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7, q4_8,   
                              q4_9, q4_10, q4_11, q4_12)
@@ -807,10 +757,7 @@ glimpse(dados_num_grupo4)
 
 Criando a tabela:
 
-```{r}
-#| echo: true
-#| warning: false
-
+```{r, warning = FALSE}
 # Textos das questões
 
 texto_questoes <- c(
@@ -830,7 +777,7 @@ texto_questoes <- c(
 
 # criando a tabela
 
-st(dados_num_grupo4, col.align = 'center', labels = texto_questoes,
+st(dados_num_grupo4, col.align = 'center', labels = texto_questoes, 
    summ = list(
      c('round(mean(x), 2)', 'pctile(x)[25]', 'round(median(x), 2)', 
        'pctile(x)[75]', 'Mode(x)', 'round(sd(x), 2)', 'round(mad(x), 2)')
