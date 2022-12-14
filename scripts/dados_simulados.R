@@ -451,6 +451,8 @@ dados <- fabricate(
 
 glimpse(dados)
 
+path0 <- '/Users/wss/github/gestao_risco/dados_simulados/dados_brutos.xlsx'
+writexl::write_xlsx(dados_categoricos, path0)
 
 # Dados Simulados: Categoricos --------------------------------------------
 
@@ -529,11 +531,11 @@ glimpse(dados_categoricos)
 
 sapply(dados_categoricos, function(x) sum(is.na(x)))
 
+path <- '/Users/wss/github/gestao_risco/dados_simulados/dados_categoricos.xlsx'
+writexl::write_xlsx(dados_categoricos, path)
+
 path1 <- "G:/Meu Drive/professor/mpa/orientacoes/turma2021/juliano_mendonca/rfiles/declare_design/dados_categoricos.rds"
 write_rds(dados_categoricos, path1)
-
-path <- 'github/dados_simulados/dados_categoricos.xlsx'
-writexl::write_xlsx(dados_categoricos, path)
 
 
 # Dados Simulados: Numericos ----------------------------------------------
@@ -709,6 +711,9 @@ glimpse(dados_numericos)
 
 sapply(dados_numericos, function(x) sum(is.na(x)))
 
-path2 <- "G:/Meu Drive/professor/mpa/orientacoes/turma2021/juliano_mendonca/rfiles/declare_design/dados_numericos.rds"
-write_rds(dados_numericos, path2)
+path2 <- '/Users/wss/github/gestao_risco/dados_simulados/dados_numericos.xlsx'
+writexl::write_xlsx(dados_numericos, path2)
+
+path3 <- "G:/Meu Drive/professor/mpa/orientacoes/turma2021/juliano_mendonca/rfiles/declare_design/dados_numericos.rds"
+write_rds(dados_numericos, path3)
 

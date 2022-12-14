@@ -1,5 +1,6 @@
 ---
 title: "Gestão de Riscos: Análise dos Dados"
+subtitle: "Instruções para o mestrando Juliano M. Terra"
 author: "Prof. Washington S. da Silva"
 format:
   html:
@@ -18,6 +19,7 @@ seguir, é necessário instalá-los, o que pode ser feito copiando os nomes e in
 #| warning: false
 
 library(readr)
+library(readxl)
 library(dplyr)
 library(vtable)
 library(DescTools)
@@ -31,30 +33,29 @@ library(knitr)
 
 ## Importanto o arquivo (csv) produzido pelo Google Forms
 
-Supondo que o arquivo dos dados do survey produzidos pelo Google Forms 
-esteja no mesmo formato do arquivo `dados_categoricos.xls`, conforme 
-conversamos na reuniáo de orientação e que este arquivo tenha sido 
-nomeado como `dados_brutos.csv`, este último arquivo pode ser 
-importando com os seguintes comandos:
+Supondo que o arquivo dos dados do survey gerado pelo Google Forms 
+esteja no mesmo formato do arquivo `dados_brutos.xlsx`, 
+**que é o formato adequado**, esse arquivo pode ser importando com os seguintes comandos:
 
 ```{r}
 #| echo: true
-#| eval: false
 
-dados <- read_csv('dados/dados_brutos.csv')
-head(dados)
-glimpse(dados)
+dados_brutos <- read_xlsx('dados/dados_brutos.xlsx')
+glimpse(dados_brutos)
 ```
 
 
-## Definindo o tipo/classe correto dos dados brutos
+## Transformando o tipo/classe dos dados brutos
+
+Após importar o arquvio dos dados brutos, **o qual deve estar no formado adequado **, é necessário converter o tipo/classe dos dados para o formato apropriado 
+para a análise. Os comandos a seguir fazem esta conversão:
 
 ```{r}
 #| echo: true
-#| eval: false
 
-dados_categoricos <- dados %>%
+dados_categoricos <- dados_brutos %>%
   transmute(
+    id = id,
     q1_1 = factor(
       q1_1,
       levels = c(
@@ -129,6 +130,8 @@ dados_categoricos <- dados %>%
     q2_14 = factor(q2_14),
     q2_15 = factor(q2_15),
     q2_16 = factor(q2_16),
+    q2_17 = factor(q2_17),
+    q2_18 = factor(q2_18),
     q3_1 = factor(q3_1),
     q3_2 = factor(q3_2),
     q3_4 = factor(q3_4),
@@ -388,14 +391,12 @@ dados_categoricos <- dados %>%
 ```
 
 
-## Importando o arquivo de dados categóricos
+## Verificando a estrutura dos dados categóricos
 
 ```{r}
 #| echo: true
 #| warning: false
 
-path1 <- "dados/dados_categoricos.rds"
-dados_categoricos <- read_rds(path1)
 glimpse(dados_categoricos)
 ```
 
@@ -488,14 +489,302 @@ tab7
 
 ## Tab. 8 de Araujo & Gomes (2021)
 
-Importando os dados numéricos:
+Para produzir uma tabela similar à Tabela 8 de Araujo & Gomes (2021) é 
+necessário transformar, certamente, as variáveis do grupo 4 para o tipo/classe numérico. 
+
+Os comandos a seguir transformam todas as variáveis que podem ser 
+transformadas para o tipo/classe numérico, para este tipo, incluindo, 
+certamente, as variáveis do grupo 4:
 
 ```{r}
 #| echo: true
 
-path2 <- "dados/dados_numericos.rds"
-dados_numericos <- read_rds(path2)
-glimpse(dados_numericos)
+dados_numericos <- dados_categoricos %>%
+  transmute(
+    id = id,
+    q1_1 = q1_1,
+    q1_2 = as.integer(q1_2),
+    q1_3 = as.integer(q1_3),
+    q1_4 = q1_4,
+    q1_5 = q1_5,
+    q1_6 = q1_6,
+    q1_7 = q1_7,
+    q1_8 = as.integer(q1_8),
+    q1_9 = q1_9,
+    q2_1 = as.integer(q2_1),
+    q2_2 = as.integer(q2_2),
+    q2_3 = as.integer(q2_3),
+    q2_4 = as.integer(q2_4),
+    q2_5 = as.integer(q2_5),
+    q2_6 = as.integer(q2_6),
+    q2_7 = as.integer(q2_7),
+    q2_8 = as.integer(q2_8),
+    q2_9 = as.integer(q2_9),
+    q2_10 = as.integer(q2_10),
+    q2_11 = as.integer(q2_11),
+    q2_12 = as.integer(q2_12),
+    q2_13 = as.integer(q2_13),
+    q2_14 = as.integer(q2_14),
+    q2_15 = as.integer(q2_15),
+    q2_16 = as.integer(q2_16),
+    q2_17 = as.integer(q2_17),
+    q2_18 = as.integer(q2_18),
+    q3_1 = as.integer(q3_1),
+    q3_2 = as.integer(q3_2),
+    q3_4 = as.integer(q3_4),
+    q3_6 = as.integer(q3_6),
+    q3_7 = as.numeric(
+      recode(
+        q3_7,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q3_8 = as.numeric(
+      recode(
+        q3_8,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q3_9 = as.integer(q3_9),
+    q3_10 = as.integer(q3_10),
+    q3_11 = as.integer(q3_11),
+    q3_12 = as.integer(q3_12),
+    q3_13 = as.integer(q3_13),
+    q3_14 = as.integer(q3_14),
+    q3_15 = as.integer(q3_15),
+    q3_16 = as.integer(q3_16),
+    q3_17 = as.integer(q3_17),
+    q3_18 = as.integer(q3_18),
+    q3_19 = as.integer(q3_19),
+    q4_1 = as.numeric(
+      recode(
+        q4_1,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_2 = as.numeric(
+      recode(
+        q4_2,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_3 = as.numeric(
+      recode(
+        q4_3,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_4 = as.numeric(
+      recode(
+        q4_4,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_5 = as.numeric(
+      recode(
+        q4_5,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_6 = as.numeric(
+      recode(
+        q4_6,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_7 = as.numeric(
+      recode(
+        q4_7,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_8 = as.numeric(
+      recode(
+        q4_8,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_9 = as.numeric(
+      recode(
+        q4_9,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_10 = as.numeric(
+      recode(
+        q4_10,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_11 = as.numeric(
+      recode(
+        q4_11,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_12 = as.numeric(
+      recode(
+        q4_12,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_1 = as.numeric(
+      recode(
+        q5_1,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_2 = as.numeric(
+      recode(
+        q5_2,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_3 = as.numeric(
+      recode(
+        q5_3,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_4 = as.numeric(
+      recode(
+        q5_4,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_5 = as.numeric(
+      recode(
+        q5_5,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_6 = as.numeric(
+      recode(
+        q5_6,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_7 = as.numeric(
+      recode(
+        q5_7,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_8 = as.numeric(
+      recode(
+        q5_8,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_9 = as.numeric(
+      recode(
+        q5_9,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_10 = as.numeric(
+      recode(
+        q5_10,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+  )
 ```
 
 Extraindo as questões do grupo 4:
@@ -505,27 +794,29 @@ Extraindo as questões do grupo 4:
 
 dados_num_grupo4 <-
   dados_numericos %>% select(q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7, q4_8,   
-                             q4_9, q4_10, q4_11, q4_12) 
+                             q4_9, q4_10, q4_11, q4_12)
+glimpse(dados_num_grupo4)
 ```
 
 Criando a tabela:
 
 ```{r}
 #| echo: true
+#| warning: false
 
 # Textos das questões
 
 texto_questoes <- c(
   'Ignorar riscos relevantes',
-  'Informações complexas',
-  'Falta de confiança/entendimento',
-  'Divergências sobre o risco',
+  'Informacoes complexas',
+  'Falta de confianca/entendimento',
+  'Divergencias sobre o risco',
   'Estrutura institucional inadequada',
-  'sistema de informação ineficiente',
-  'Renovação do ciclo de GR',
+  'sistema de informacao ineficiente',
+  'Renovacao do ciclo de GR',
   'Mapeamento dos processos',
   'Falta de engajamento',
-  'Falta de capacitação',
+  'Falta de capacitacao',
   'Excesso de demandas',
   'Recursos insuficientes'
 )
@@ -535,7 +826,7 @@ texto_questoes <- c(
 st(dados_num_grupo4, col.align = 'center', labels = texto_questoes,
    summ = list(
      c('round(mean(x), 2)', 'pctile(x)[25]', 'round(median(x), 2)', 
-       'pctile(x)[75]', 'Mode(x)','round(sd(x), 2)', 'round(mad(x), 2)')
+       'pctile(x)[75]', 'Mode(x)', 'round(sd(x), 2)', 'round(mad(x), 2)')
    ),
    summ.names = list(
      c('Media', 'q1','Mediana', 'q3', 'Moda', 'Desvio-Padrao', 'DAM')
