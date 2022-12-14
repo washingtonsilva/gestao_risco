@@ -14,6 +14,7 @@
 library(fabricatr)
 library(dplyr)
 library(readr)
+library(writexl)
 
 ## fixando a semente
 set.seed(425884)
@@ -531,6 +532,8 @@ sapply(dados_categoricos, function(x) sum(is.na(x)))
 path1 <- "G:/Meu Drive/professor/mpa/orientacoes/turma2021/juliano_mendonca/rfiles/declare_design/dados_categoricos.rds"
 write_rds(dados_categoricos, path1)
 
+path <- 'github/dados_simulados/dados_categoricos.xlsx'
+writexl::write_xlsx(dados_categoricos, path)
 
 
 # Dados Simulados: Numericos ----------------------------------------------

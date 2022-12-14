@@ -10,6 +10,9 @@ format:
 
 ## Pacotes necessários
 
+Importante lembrar que antes de ativar os pacotes, conforme os comandos a 
+seguir, é necessário instalá-los, o que pode ser feito copiando os nomes e inseri-los no menu `Packages -> Install` do RStudio, sendo que os nomes dos pacotes devem ser separados por um espaço ou por vírgula.
+
 ```{r}
 #| echo: true
 #| warning: false
@@ -28,6 +31,11 @@ library(knitr)
 
 ## Importanto o arquivo (csv) produzido pelo Google Forms
 
+Supondo que o arquivo dos dados do survey produzidos pelo Google Forms 
+esteja no mesmo formato do arquivo `dados_categoricos.xls`, conforme 
+conversamos na reuniáo de orientação e que este arquivo tenha sido 
+nomeado como `dados_brutos.csv`, este último arquivo pode ser 
+importando com os seguintes comandos:
 
 ```{r}
 #| echo: true
@@ -37,6 +45,7 @@ dados <- read_csv('dados/dados_brutos.csv')
 head(dados)
 glimpse(dados)
 ```
+
 
 ## Definindo o tipo/classe correto dos dados brutos
 
@@ -275,8 +284,106 @@ dados_categoricos <- dados %>%
         "Concordo totalmente"),
       ordered = TRUE
     ),
-    
-    
+  q5_1 = factor(
+      q5_1,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_2 = factor(
+      q5_2,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_3 = factor(
+      q5_3,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_4 = factor(
+      q5_4,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_5 = factor(
+      q5_5,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_6 = factor(
+      q5_6,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_7 = factor(
+      q5_7,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_8 = factor(
+      q5_8,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_9 = factor(
+      q5_9,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_10 = factor(
+      q5_10,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    )
 )
 ```
 
