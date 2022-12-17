@@ -77,7 +77,7 @@ dados_categoricos <- dados_brutos %>%
     q1_2 = factor(q1_2),
     q1_3 = factor(q1_3),
     q1_4 = factor(
-      q1_1,
+      q1_4,
       levels = c("CD-2",
                  "CD-3",
                  "CD-4",
