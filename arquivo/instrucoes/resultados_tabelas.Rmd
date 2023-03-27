@@ -1,0 +1,790 @@
+---
+title: "Instruçoes para Analisar os Dados do Survey"
+author: "Prof. Washington S. Silva"
+output: html_notebook
+---
+
+## Pacotes Necessários
+
+```{r setup, warning = FALSE, message = FALSE}
+library(readr)
+library(readxl)
+library(dplyr)
+library(vtable)
+library(DescTools)
+library(descr)
+library(pander)
+library(janitor)
+library(tidyr)
+library(knitr)
+```
+
+
+## Importanto o arquivo (csv) produzido pelo Google Forms
+
+```{r}
+dados_brutos <- read_xlsx('dados/dados_brutos.xlsx')
+glimpse(dados_brutos)
+```
+
+
+## Transformando o tipo/classe dos dados brutos
+
+```{r}
+#| echo: true
+
+dados_categoricos <- dados_brutos %>%
+  transmute(
+    id = id,
+    q1_1 = factor(
+      q1_1,
+      levels = c(
+        "20-30 anos",
+        "31-40 anos",
+        "41-50 anos",
+        "51-60 anos",
+        "Mais de 60 anos"
+      ),
+      ordered = TRUE
+    ),
+    q1_2 = factor(q1_2),
+    q1_3 = factor(q1_3),
+    q1_4 = factor(
+      q1_1,
+      levels = c("CD-2",
+                 "CD-3",
+                 "CD-4",
+                 "FG-1",
+                 "FG-2"),
+      ordered = TRUE
+    ),
+    q1_5 = factor(
+      q1_5,
+      levels =  c(
+        "Ensino fundamental",
+        "Ensino médio",
+        "Ensino superior",
+        "Especialização",
+        "Mestrado",
+        "Doutorado"
+      ),
+      ordered = TRUE
+    ),
+    q1_6 = factor(
+      q1_6,
+      levels = c(
+        "Até 5 anos",
+        "6-10 anos",
+        "11-15 anos",
+        "16-20 anos",
+        "Mais de 20 anos"
+      ),
+      ordered = TRUE
+    ),
+    q1_7 = factor(
+      q1_7,
+      levels = c(
+        "Até 5 anos",
+        "6-10 anos",
+        "11-15 anos",
+        "16-20 anos",
+        "Mais de 20 anos"
+      ),
+      ordered = TRUE
+    ),
+    q1_8 = factor(q1_8),
+    q1_9 = factor(q1_9),
+    q2_1 = factor(q2_1),
+    q2_2 = factor(q2_2),
+    q2_3 = factor(q2_3),
+    q2_4 = factor(q2_4),
+    q2_5 = factor(q2_5),
+    q2_6 = factor(q2_6),
+    q2_7 = factor(q2_7),
+    q2_8 = factor(q2_8),
+    q2_9 = factor(q2_9),
+    q2_10 = factor(q2_10),
+    q2_11 = factor(q2_11),
+    q2_12 = factor(q2_12),
+    q2_13 = factor(q2_13),
+    q2_14 = factor(q2_14),
+    q2_15 = factor(q2_15),
+    q2_16 = factor(q2_16),
+    q2_17 = factor(q2_17),
+    q2_18 = factor(q2_18),
+    q3_1 = factor(q3_1),
+    q3_2 = factor(q3_2),
+    q3_4 = factor(q3_4),
+    q3_6 = factor(q3_6),
+    q3_7 = factor(
+      q3_7,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q3_8 = factor(
+      q3_8,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q3_9 = factor(q3_9),
+    q3_10 = factor(q3_10),
+    q3_11 = factor(q3_11),
+    q3_12 = factor(q3_12),
+    q3_13 = factor(q3_13),
+    q3_14 = factor(q3_14),
+    q3_15 = factor(q3_15),
+    q3_16 = factor(q3_16),
+    q3_17 = factor(q3_17),
+    q3_18 = factor(q3_18),
+    q3_19 = factor(q3_19),
+    q4_1 = factor(
+      q4_1,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_2 = factor(
+      q4_2,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_3 = factor(
+      q4_3,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_4 = factor(
+      q4_4,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_5 = factor(
+      q4_5,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_6 = factor(
+      q4_6,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_7 = factor(
+      q4_7,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_8 = factor(
+      q4_8,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_9 = factor(
+      q4_9,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_10 = factor(
+      q4_10,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_11 = factor(
+      q4_11,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q4_12 = factor(
+      q4_12,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+  q5_1 = factor(
+      q5_1,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_2 = factor(
+      q5_2,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_3 = factor(
+      q5_3,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_4 = factor(
+      q5_4,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_5 = factor(
+      q5_5,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_6 = factor(
+      q5_6,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_7 = factor(
+      q5_7,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_8 = factor(
+      q5_8,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_9 = factor(
+      q5_9,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    ),
+    q5_10 = factor(
+      q5_10,
+      levels = c(
+        "Discordo totalmente", 
+        "Discordo parcialmente", 
+        "Nem concordo, nem discordo", 
+        "Concordo parcialmente", 
+        "Concordo totalmente"),
+      ordered = TRUE
+    )
+)
+```
+
+
+## Verificando a estrutura dos dados categóricos
+
+```{r}
+glimpse(dados_categoricos)
+```
+
+
+## Tab. 3 de Araujo & Gomes (2021): Sexo e Faixa Etaria
+
+```{r}
+CrossTable(dados_categoricos$q1_1, dados_categoricos$q1_2, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+```
+
+
+## Tab. 4 de Araujo & Gomes (2021): Formação e Função
+
+```{r}
+CrossTable(dados_categoricos$q1_5, dados_categoricos$q1_3, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+```
+
+
+## Tab. 5 de Araujo & Gomes (2021): Tempo de Experiência na Instituicao
+
+```{r}
+dados_categoricos %>%
+  tabyl(q1_6)  %>%
+  adorn_totals("row") %>%
+  adorn_pct_formatting(digits = 0)
+```
+
+
+## Tab. 6 de Araujo & Gomes (2021): Tempo de Experiencia e Participacao em curso de gestao de riscos
+
+```{r}
+CrossTable(dados_categoricos$q1_6, dados_categoricos$q1_8, 
+           digits = 2, prop.chisq = FALSE, prop.c = FALSE, 
+           prop.r = FALSE, format = "SPSS")
+```
+
+
+## Tab. 7 de Araujo & Gomes (2021)
+
+```{r}
+# extraindo id e as questões do grupo 4
+ 
+dados_cat_grupo4 <-
+  dados_categoricos %>% select(id, q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7,
+                               q4_8, q4_9, q4_10, q4_11, q4_12) %>%
+              rename(`Ignorar riscos relevantes` = q4_1, 
+                     `Informações complexas` = q4_2,
+                     `Falta de confiança/entendimento` = q4_3,
+                     `Divergências sobre o risco` = q4_4,
+                     `Estrutura institucional inadequada` = q4_5,
+                     `sistema de informação ineficiente` = q4_6,
+                     `Renovação do ciclo de GR` = q4_7,
+                     `Mapeamento dos processos` = q4_8,
+                     `Falta de engajamento` = q4_9,
+                     `Falta de capacitação` = q4_10,
+                     `Excesso de demandas` = q4_11,
+                     `Recursos insuficientes` = q4_12
+                             )
+
+# alterando para o formato long
+  
+catlongo <- dados_cat_grupo4 %>%
+  pivot_longer(!id, names_to = "liker", values_to = "count")
+
+# criando a tabela 
+ 
+tab7 <- catlongo %>%
+  tabyl(liker, count) %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(digits = 1) %>%
+  adorn_ns()
+
+tab7
+```
+
+
+## Tab. 8 de Araujo & Gomes (2021)
+
+
+```{r}
+dados_numericos <- dados_categoricos %>%
+  transmute(
+    id = id,
+    q1_1 = q1_1,
+    q1_2 = as.integer(q1_2),
+    q1_3 = as.integer(q1_3),
+    q1_4 = q1_4,
+    q1_5 = q1_5,
+    q1_6 = q1_6,
+    q1_7 = q1_7,
+    q1_8 = as.integer(q1_8),
+    q1_9 = q1_9,
+    q2_1 = as.integer(q2_1),
+    q2_2 = as.integer(q2_2),
+    q2_3 = as.integer(q2_3),
+    q2_4 = as.integer(q2_4),
+    q2_5 = as.integer(q2_5),
+    q2_6 = as.integer(q2_6),
+    q2_7 = as.integer(q2_7),
+    q2_8 = as.integer(q2_8),
+    q2_9 = as.integer(q2_9),
+    q2_10 = as.integer(q2_10),
+    q2_11 = as.integer(q2_11),
+    q2_12 = as.integer(q2_12),
+    q2_13 = as.integer(q2_13),
+    q2_14 = as.integer(q2_14),
+    q2_15 = as.integer(q2_15),
+    q2_16 = as.integer(q2_16),
+    q2_17 = as.integer(q2_17),
+    q2_18 = as.integer(q2_18),
+    q3_1 = as.integer(q3_1),
+    q3_2 = as.integer(q3_2),
+    q3_4 = as.integer(q3_4),
+    q3_6 = as.integer(q3_6),
+    q3_7 = as.numeric(
+      recode(
+        q3_7,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q3_8 = as.numeric(
+      recode(
+        q3_8,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q3_9 = as.integer(q3_9),
+    q3_10 = as.integer(q3_10),
+    q3_11 = as.integer(q3_11),
+    q3_12 = as.integer(q3_12),
+    q3_13 = as.integer(q3_13),
+    q3_14 = as.integer(q3_14),
+    q3_15 = as.integer(q3_15),
+    q3_16 = as.integer(q3_16),
+    q3_17 = as.integer(q3_17),
+    q3_18 = as.integer(q3_18),
+    q3_19 = as.integer(q3_19),
+    q4_1 = as.numeric(
+      recode(
+        q4_1,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_2 = as.numeric(
+      recode(
+        q4_2,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_3 = as.numeric(
+      recode(
+        q4_3,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_4 = as.numeric(
+      recode(
+        q4_4,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_5 = as.numeric(
+      recode(
+        q4_5,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_6 = as.numeric(
+      recode(
+        q4_6,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_7 = as.numeric(
+      recode(
+        q4_7,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_8 = as.numeric(
+      recode(
+        q4_8,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_9 = as.numeric(
+      recode(
+        q4_9,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_10 = as.numeric(
+      recode(
+        q4_10,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_11 = as.numeric(
+      recode(
+        q4_11,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q4_12 = as.numeric(
+      recode(
+        q4_12,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_1 = as.numeric(
+      recode(
+        q5_1,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_2 = as.numeric(
+      recode(
+        q5_2,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_3 = as.numeric(
+      recode(
+        q5_3,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_4 = as.numeric(
+      recode(
+        q5_4,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_5 = as.numeric(
+      recode(
+        q5_5,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_6 = as.numeric(
+      recode(
+        q5_6,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_7 = as.numeric(
+      recode(
+        q5_7,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_8 = as.numeric(
+      recode(
+        q5_8,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_9 = as.numeric(
+      recode(
+        q5_9,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+    q5_10 = as.numeric(
+      recode(
+        q5_10,
+        "Discordo totalmente"  = 1,
+        "Discordo parcialmente" = 2,
+        "Nem concordo, nem discordo" = 3,
+        "Concordo parcialmente" = 4,
+        "Concordo totalmente" = 5
+      )
+    ),
+  )
+```
+
+Extraindo as questões do grupo 4:
+
+```{r}
+dados_num_grupo4 <-
+  dados_numericos %>% select(q4_1, q4_2, q4_3, q4_4, q4_5, q4_6, q4_7, q4_8,   
+                             q4_9, q4_10, q4_11, q4_12)
+glimpse(dados_num_grupo4)
+```
+
+Criando a tabela:
+
+```{r, warning = FALSE}
+# Textos das questões
+
+texto_questoes <- c(
+  'Ignorar riscos relevantes',
+  'Informacoes complexas',
+  'Falta de confianca/entendimento',
+  'Divergencias sobre o risco',
+  'Estrutura institucional inadequada',
+  'sistema de informacao ineficiente',
+  'Renovacao do ciclo de GR',
+  'Mapeamento dos processos',
+  'Falta de engajamento',
+  'Falta de capacitacao',
+  'Excesso de demandas',
+  'Recursos insuficientes'
+)
+
+# criando a tabela
+
+st(dados_num_grupo4, col.align = 'center', labels = texto_questoes, 
+   summ = list(
+     c('round(mean(x), 2)', 'pctile(x)[25]', 'round(median(x), 2)', 
+       'pctile(x)[75]', 'Mode(x)', 'round(sd(x), 2)', 'round(mad(x), 2)')
+   ),
+   summ.names = list(
+     c('Media', 'q1','Mediana', 'q3', 'Moda', 'Desvio-Padrao', 'DAM')
+   ))
+```
+
+
